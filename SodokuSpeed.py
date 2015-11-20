@@ -30,21 +30,21 @@ def groups(puzzle, pos):
     column = pos%9
     if(row<3 and column<3):
         grp = 1
-    if(row<3 and column<6):
+    elif(row<3 and column<6):
         grp=2
-    if(row<3 and column<9):
+    elif(row<3 and column<9):
         grp = 3
-    if(row<6 and column<3):
+    elif(row<6 and column<3):
         grp=4
-    if(row<6 and column<6):
+    elif(row<6 and column<6):
         grp = 5
-    if(row<6 and column<9):
+    elif(row<6 and column<9):
         grp=6
-    if(row<9 and column<3):
+    elif(row<9 and column<3):
         grp = 7
-    if(row<9 and column<6):
+    elif(row<9 and column<6):
         grp=8
-    if(row<9 and column<9):
+    elif(row<9 and column<9):
         grp=9
     grp+=-1
     #grp = (int((row)/3)+int((column)/3))+int((row)/3)*int((column)/3)
@@ -83,8 +83,6 @@ def bruteForce(puzzle):
         global counter
         counter+=1
         newpuz = puzzle[:pos]+c+puzzle[pos+1:]
-        #printneat(newpuz)
-        #print()
         bf = bruteForce(newpuz)
         if(bf!=""):
             return bf
@@ -111,9 +109,17 @@ def printneat(puzzle):
 
 Temp = open("sudoku128.txt").read().split()
 #print(int(len(Temp)))
-printneat(Temp[12])
-printneat(bruteForce(Temp[12]))
+#printneat(Temp[12])
+#57printneat(bruteForce(Temp[12]))
+#printneat("9876")
+
+
+
+#Command Line Stuff
+
+#Range of Values
 if len(sys.argv)>2:
+    Start = time.clock()
     if int(sys.argv[1])==0:
         print("What Puzzle zero?")
         sys.argv[1] = 1
@@ -122,6 +128,7 @@ if len(sys.argv)>2:
         counter = 0
         T= time.clock()
         Temp1 = bruteForce(Temp[i])
+        print("*"),
         T = time.clock()-T
         if validateSolution(Temp1):
             print(str(i+1)+": "+Temp1)
@@ -129,12 +136,15 @@ if len(sys.argv)>2:
             print("Guesses: "+str(counter))
             print("Time: "+str(T))
             print("")
+    print("Total Time"+str(time.clock()-Start))
+
+#Print one puzzle
 elif len(sys.argv)>1:
     if int(sys.argv[1])==0:
         print("What Puzzle zero?")
     else:
         printneat(Temp[int(sys.argv[1])-1])
         T = time.clock()
-        printneat(bruteForce(Temp[int(sys.argv[1])]))
+        printneat(bruteForce(Temp[int(sys.argv[1]-1)]))
         print("Guesses: "+str(counter))
         print("Time: "+ str(time.clock()-T))

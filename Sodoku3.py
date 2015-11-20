@@ -1,8 +1,9 @@
 __author__ = 'Vishal Tandale'
 #Vishal Tandale
-import sys, string, time
+import sys, time
 global counter
 counter = 0
+#Check if solution is valid
 def validateSolution(puzzle):
     checkrow = {}
     checkcol = {}
@@ -40,11 +41,13 @@ def cgroups(pos):
     Group["grp"] = set(Group["grp"])
     return Group
 
+#Calculates the group pos min is in
 def getGrp(pos,agrp):
     for x in agrp["grp"]:
         if pos in agrp["grp"][x]:
             return x
 
+#calculates agrps and dictpos
 def cagrps(puzzle):
     agrps = {"row":{},"col":{},"grp":{}}
     for x in range(9):
@@ -63,6 +66,7 @@ def cagrps(puzzle):
             dictpos[i] = set('123456789')-(({puzzle[grp] for grp in agrps["row"][int(i/9)]} | {puzzle[grp] for grp in agrps["col"][i%9]} | {puzzle[grp] for grp in agrps["grp"][getGrp(i,agrps)]})-{'.'})
     return [dictpos,agrps]
 
+#Removes symbol c from position min
 def remove(min, agrp, dictpos, c):
     row = int(min/9)
     col = (min)%9
@@ -78,6 +82,39 @@ def remove(min, agrp, dictpos, c):
             dictpos[x] = dictpos[x]-{c}
     del dictpos[min]
 
+#This is the second deduction which is if the dictpos has a unique value that no other pos in the rest of the group has then it is an deduction
+def uniquevalue(pos, agrp, dictpos):
+    Pospos = {sym for sym in dictpos[pos]}
+    Grppos = set([])
+    Rowpos = set([])
+    Colpos = set([])
+    for grp in agrp["row"][int(pos/9)]:
+        if grp in dictpos and not grp == pos:
+            Rowpos = Rowpos | dictpos[grp]
+    Temp = Pospos - Rowpos
+    if(len(Temp)==1):
+        return Temp
+    elif(len(Temp)>=1):
+        return set([])
+    for grp in agrp["col"][pos%9]:
+        if grp in dictpos and not grp == pos:
+            Colpos = Colpos|dictpos[grp]
+    Temp = Pospos - Colpos
+    if(len(Temp)==1):
+        return Temp
+    elif(len(Temp)>=1):
+        return set([])
+    for grp in agrp["grp"][getGrp(pos,agrp)]:
+        if grp in dictpos and not grp == pos:
+            Grppos = Grppos|dictpos[grp]
+    Temp = Pospos -Grppos
+    if(len(Temp)==1):
+        return Temp
+    elif(len(Temp)>=1):
+        return set([])
+    return Temp
+
+
 def bruteForce(puzzle,Lists):
     dctpos = Lists[0]
     agrps = Lists[1]
@@ -92,11 +129,19 @@ def bruteForce(puzzle,Lists):
             if len(dctpos[i])==1:
                 min = i
                 break
+            Deduct = len(uniquevalue(i,agrps,dctpos))
+            if Deduct ==1 :
+                min = i
+                break
+            elif not Deduct ==0:
+                print(puzzle)
+                return ""
             if len(dctpos[i])<len(dctpos[min]):
                 min = i
     for c in dctpos[min]:
-        global counter
-        counter+=1
+        if(len(dctpos[min])==1):
+            global counter
+            counter+=1
         newpuz = puzzle[:min]+c+puzzle[min+1:]
         #print()
         #printneat(newpuz)
@@ -129,9 +174,10 @@ def printneat(puzzle):
 
 
 Temp = open("sudoku128.txt").read().split()
-#printneat(Temp[56])
-#printneat(bruteForce(Temp[12],cagrps(Temp[12])))
-
+T =time.clock()
+printneat(Temp[52])
+printneat(bruteForce(Temp[52],cagrps(Temp[52])))
+print("Time"+str(time.clock()-T))
 if len(sys.argv)>2:
     Start = time.clock()
     if int(sys.argv[1])==0:
