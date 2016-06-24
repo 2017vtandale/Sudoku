@@ -23,6 +23,13 @@ def validateSolution(puzzle):
             count+=1
     return True
 
+
+#Calculates the group pos min is in
+def getGrp(pos,agrp):
+    for x in agrp["grp"]:
+        if pos in agrp["grp"][x]:
+            return x
+
 #Create Possible Groups
 def cgroups(pos):
     Group = {}
@@ -40,12 +47,6 @@ def cgroups(pos):
     Group["grp"].append(start+18+1)
     Group["grp"] = set(Group["grp"])
     return Group
-
-#Calculates the group pos min is in
-def getGrp(pos,agrp):
-    for x in agrp["grp"]:
-        if pos in agrp["grp"][x]:
-            return x
 
 #calculates agrps and dictpos
 def cagrps(puzzle):
@@ -82,6 +83,12 @@ def remove(min, agrp, dictpos, c):
             dictpos[x] = dictpos[x]-{c}
     del dictpos[min]
 
+
+
+
+
+
+
 #This is the second deduction which is if the dictpos has a unique value that no other pos in the rest of the group has then it is an deduction
 def uniquevalue(pos, agrp, dictpos):
     Pospos = {sym for sym in dictpos[pos]}
@@ -107,7 +114,7 @@ def uniquevalue(pos, agrp, dictpos):
     for grp in agrp["grp"][getGrp(pos,agrp)]:
         if grp in dictpos and not grp == pos:
             Grppos = Grppos|dictpos[grp]
-    Temp = Pospos -Grppos
+    Temp = Pospos - Grppos
     if(len(Temp)==1):
         return Temp
     elif(len(Temp)>=1):
