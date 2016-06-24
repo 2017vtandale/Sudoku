@@ -41,9 +41,30 @@ def cgroups(pos):
     return Group
 
 def getGrp(pos,agrp):
-    for x in agrp["grp"]:
-        if pos in agrp["grp"][x]:
-            return x
+    row = int(pos/9)
+    column = pos%9
+    if(row<3 and column<3):
+        grp = 1
+    elif(row<3 and column<6):
+        grp=2
+    elif(row<3 and column<9):
+        grp = 3
+    elif(row<6 and column<3):
+        grp=4
+    elif(row<6 and column<6):
+        grp = 5
+    elif(row<6 and column<9):
+        grp=6
+    elif(row<9 and column<3):
+        grp = 7
+    elif(row<9 and column<6):
+        grp=8
+    elif(row<9 and column<9):
+        grp=9
+    grp+=-1
+    return grp
+	
+	
 
 def cagrps(puzzle):
     agrps = {"row":{},"col":{},"grp":{}}
@@ -127,11 +148,26 @@ def printneat(puzzle):
     print(Temp)
     print("-------------------")
 
-
-Temp = open("sudoku128.txt").read().split()
+File = "sudoku141.txt"
+Temp = open(File).read().split()
 #printneat(Temp[56])
 #printneat(bruteForce(Temp[12],cagrps(Temp[12])))
+Start = time.clock()
+for i in range(0,len(Temp)):
+	print(str(i+1)+": "+Temp[i])
+	counter = 0
+	T= time.clock()
+	Temp1 = bruteForce(Temp[i],cagrps(Temp[i]))
+	T = time.clock()-T
+	print(str(i+1)+": "+Temp1)
+	print("")
+	print("Guesses: "+str(counter))
+	print("Time: "+str(T))
+	print("")
+print("Time it takes: "+str(time.clock()-Start))
 
+#sys.argv[1] = '1'
+#sys.argv[2] = '128'
 if len(sys.argv)>2:
     Start = time.clock()
     if int(sys.argv[1])==0:
